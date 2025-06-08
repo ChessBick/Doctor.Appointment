@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{118ADD00-5C07-42B2-B742-75932951BE56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doctor.Appointment.API", "API\Doctor.Appointment.API\Doctor.Appointment.API.csproj", "{BAD24735-64D4-46A3-A0CD-15D5F294BED8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAD24735-64D4-46A3-A0CD-15D5F294BED8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAD24735-64D4-46A3-A0CD-15D5F294BED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAD24735-64D4-46A3-A0CD-15D5F294BED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAD24735-64D4-46A3-A0CD-15D5F294BED8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BAD24735-64D4-46A3-A0CD-15D5F294BED8} = {118ADD00-5C07-42B2-B742-75932951BE56}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA13FBD3-19A8-4674-9480-F097153ED1AF}
+	EndGlobalSection
+EndGlobal

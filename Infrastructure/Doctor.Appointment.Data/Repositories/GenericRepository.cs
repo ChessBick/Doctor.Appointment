@@ -22,7 +22,7 @@ namespace Doctor.Appointment.Data.Repositories
         public async void Delete(long id)
         {
             var record = await _entity.FindAsync(id);
-            _entity.Remove(entity: record);
+            _entity.Remove(entity: record!);
         }
 
         public IEnumerable<T> GetAll()
@@ -32,7 +32,12 @@ namespace Doctor.Appointment.Data.Repositories
 
         public T GetById(long id)
         {
-            return _entity.Find(id);
+            return _entity.Find(id) ?? null!;
+        }
+
+        public async Task<T?> GetByIdAsync(long id)
+        {
+            return await _entity.FindAsync(id);
         }
 
         public void Insert(T obj)
@@ -43,6 +48,11 @@ namespace Doctor.Appointment.Data.Repositories
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
 
         public void Update(T obj)

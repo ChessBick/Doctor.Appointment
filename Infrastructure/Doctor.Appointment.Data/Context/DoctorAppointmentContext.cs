@@ -8,9 +8,9 @@ namespace Doctor.Appointment.Data.Context
         public DoctorAppointmentContext(DbContextOptions<DoctorAppointmentContext> dbco) : base(dbco) { }
 
 
-        public DbSet<Domain.Entities.Appointment> Appointment { get; set; }
-        public DbSet<Domain.Entities.Doctor> Doctors { get; set; }
-        public DbSet<Patient> Patients { get; set; }  
+        public DbSet<Domain.Entities.AppointmentEntity> Appointment { get; set; }
+        public DbSet<Domain.Entities.DoctorEntity> Doctors { get; set; }
+        public DbSet<PatientEntity> Patients { get; set; }  
 
     }
 }

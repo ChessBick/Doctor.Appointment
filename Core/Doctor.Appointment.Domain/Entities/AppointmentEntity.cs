@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Doctor.Appointment.Domain.Entities
 {
-    public class Appointment
+    public class AppointmentEntity
     {
         public long Id { get; set; }
         public DateTime AppointmentTime { get; set; }

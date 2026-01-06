@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{118ADD00-5C07-42B2-B742-75932951BE56}"
 EndProject
@@ -18,6 +18,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doctor.Appointment.Data", "Infrastructure\Doctor.Appointment.Data\Doctor.Appointment.Data.csproj", "{D215C52E-D80C-4838-8C9C-D0663275D01B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doctor.Appointment.Application", "Core\Doctor.Appointment.Application\Doctor.Appointment.Application.csproj", "{917EC1DE-E4FF-428C-89FA-07B8820146A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{DC96AF22-D95D-4D1D-AB68-9581E9266266}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doctor.Appointment.Web", "Application\Doctor.Appointment.Web\Doctor.Appointment.Web.csproj", "{11E12D34-6EA5-4C17-8F12-C3374566A9EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,10 @@ Global
 		{917EC1DE-E4FF-428C-89FA-07B8820146A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{917EC1DE-E4FF-428C-89FA-07B8820146A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{917EC1DE-E4FF-428C-89FA-07B8820146A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11E12D34-6EA5-4C17-8F12-C3374566A9EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11E12D34-6EA5-4C17-8F12-C3374566A9EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11E12D34-6EA5-4C17-8F12-C3374566A9EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11E12D34-6EA5-4C17-8F12-C3374566A9EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +58,7 @@ Global
 		{3FF64C63-FCBA-4D30-B07F-42EB0336FACC} = {75EF4F50-4B06-4BE7-87FA-8651636A8D43}
 		{D215C52E-D80C-4838-8C9C-D0663275D01B} = {AE4B1841-E86D-4DC0-98AE-FC37AFF8414D}
 		{917EC1DE-E4FF-428C-89FA-07B8820146A8} = {75EF4F50-4B06-4BE7-87FA-8651636A8D43}
+		{11E12D34-6EA5-4C17-8F12-C3374566A9EF} = {DC96AF22-D95D-4D1D-AB68-9581E9266266}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA13FBD3-19A8-4674-9480-F097153ED1AF}

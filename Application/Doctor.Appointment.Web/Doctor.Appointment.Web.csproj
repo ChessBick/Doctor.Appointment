@@ -11,4 +11,8 @@
     <PackageReference Include="MudBlazor" Version="9.0.0-preview.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Doctor.Appointment.Domain\Doctor.Appointment.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

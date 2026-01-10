@@ -1,0 +1,49 @@
+@page "/doctor/dashboard"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Doctor")]
+@rendermode InteractiveServer
+
+<PageTitle>Doctor Dashboard</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h3" GutterBottom="true">Doctor Dashboard</MudText>
+    <MudText Typo="Typo.body1" Color="Color.Secondary">Manage your appointments and patients</MudText>
+
+    <MudGrid Class="mt-4">
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">Today's Appointments</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">View today's schedule</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">View Schedule</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">Patient List</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Manage your patients</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">View Patients</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">Availability</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Set your availability</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Manage</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

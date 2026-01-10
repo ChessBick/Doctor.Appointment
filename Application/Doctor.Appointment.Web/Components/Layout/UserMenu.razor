@@ -1,0 +1,47 @@
+@using Doctor.Appointment.Web.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject CustomAuthenticationStateProvider AuthStateProvider
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<AuthorizeView>
+    <Authorized>
+        <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" AnchorOrigin="Origin.BottomRight">
+            <MudMenuItem>
+                <div Class="d-flex flex-column">
+                    <MudText Typo="Typo.body2">@context.User.Identity?.Name</MudText>
+                    <MudText Typo="Typo.caption">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</MudText>
+                </div>
+            </MudMenuItem>
+            <MudDivider />
+            <MudMenuItem Icon="@Icons.Material.Filled.Person" Href="/profile">Profile</MudMenuItem>
+            <MudMenuItem Icon="@Icons.Material.Filled.Settings" Href="/settings">Settings</MudMenuItem>
+            <MudDivider />
+            <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="HandleLogout">Logout</MudMenuItem>
+        </MudMenu>
+    </Authorized>
+    <NotAuthorized>
+        <MudButton Href="/login" Variant="Variant.Text" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.Login">
+            Login
+        </MudButton>
+        <MudButton Href="/register" Variant="Variant.Filled" Color="Color.Primary">
+            Sign Up
+        </MudButton>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private async Task HandleLogout()
+    {
+        var currentUser = AuthStateProvider.GetCurrentUser();
+        if (currentUser != null)
+        {
+            await AuthService.LogoutAsync(currentUser.Id);
+        }
+
+        AuthStateProvider.MarkUserAsLoggedOut();
+        Snackbar.Add("Logged out successfully", Severity.Success);
+        Navigation.NavigateTo("/login", forceLoad: true);
+    }
+}

@@ -1,0 +1,49 @@
+@page "/patient/dashboard"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Patient")]
+@rendermode InteractiveServer
+
+<PageTitle>Patient Dashboard</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudText Typo="Typo.h3" GutterBottom="true">Patient Dashboard</MudText>
+    <MudText Typo="Typo.body1" Color="Color.Secondary">Welcome to your patient dashboard</MudText>
+
+    <MudGrid Class="mt-4">
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">My Appointments</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">View and manage your appointments</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">View All</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">Find Doctor</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Search and book appointments</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">Search</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" md="4">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">Medical Records</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">Access your medical history</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary">View</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

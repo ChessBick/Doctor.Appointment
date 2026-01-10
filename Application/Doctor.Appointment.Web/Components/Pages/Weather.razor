@@ -1,5 +1,7 @@
 ﻿@page "/weather"
-@attribute [StreamRendering]
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@rendermode InteractiveServer
 
 <PageTitle>Weather</PageTitle>
 
@@ -17,8 +19,8 @@ else
         <thead>
             <tr>
                 <th>Date</th>
-                <th aria-label="Temperature in Celsius">Temp. (C)</th>
-                <th aria-label="Temperature in Fahrenheit">Temp. (F)</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
                 <th>Summary</th>
             </tr>
         </thead>

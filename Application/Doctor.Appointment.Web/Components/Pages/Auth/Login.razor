@@ -1,0 +1,150 @@
+@layout LoginLayout;
+@page "/login"
+@rendermode InteractiveServer
+
+
+
+<PageTitle>Login</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-0" Style="height: 100vh;">
+    <MudGrid Class="ma-0" Style="height: 100%;">
+        <!-- Left Panel - Purple Gradient Section -->
+        <MudItem xs="12" md="6" Class="d-flex flex-column align-center justify-center pa-8" 
+                 Style="background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); color: white; position: relative;">
+            
+            <!-- Logo -->
+            <div Style="position: absolute; top: 32px; left: 32px;">
+                <MudText Typo="Typo.h4" Style="font-weight: bold;">AMU</MudText>
+            </div>
+
+            <!-- Back to website button -->
+            <div Style="position: absolute; top: 32px; right: 32px;">
+                <MudButton Href="/" Variant="Variant.Outlined" Color="Color.Surface" 
+                           EndIcon="@Icons.Material.Filled.ArrowForward" Style="color: white; border-color: rgba(255,255,255,0.3);">
+                    Back to website
+                </MudButton>
+            </div>
+
+            <!-- Center Content -->
+            <div Class="text-center mb-8">
+                <MudText Typo="Typo.h3" Style="font-weight: 500; margin-bottom: 16px;">
+                    Welcome Back,<br/>Login to Continue
+                </MudText>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div Class="d-flex gap-2">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Style="opacity: 0.4;" />
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" />
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Size="Size.Small" Style="opacity: 0.4;" />
+            </div>
+        </MudItem>
+
+        <!-- Right Panel - Login Form -->
+        <MudItem xs="12" md="6" Class="d-flex flex-column align-center justify-center pa-8" 
+                 Style="background-color: #1f1f2e;">
+            <MudPaper Elevation="0" Class="pa-8" Style="max-width: 480px; width: 100%; background-color: transparent;">
+                
+                <!-- Header -->
+                <MudText Typo="Typo.h3" Class="mb-4" Style="color: white; font-weight: 500;">
+                    Login to your account
+                </MudText>
+                
+                <MudText Typo="Typo.body1" Class="mb-6" Style="color: rgba(255,255,255,0.7);">
+                    Don't have an account? <MudLink Href="/register" Style="color: #a78bfa;">Sign up</MudLink>
+                </MudText>
+
+                <!-- Login Form -->
+                <EditForm Model="@model" OnValidSubmit="HandleLogin">
+                    <DataAnnotationsValidator />
+                    <MudGrid Spacing="3">
+                        <!-- Username or Email -->
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="model.UsernameOrEmail" 
+                                          Label="Username or Email" 
+                                          InputType="InputType.Text"
+                                          Variant="Variant.Outlined"
+                                          Required="true"
+                                          Style="background-color: rgba(255,255,255,0.05);"
+                                          Class="custom-textfield" />
+                        </MudItem>
+
+                        <!-- Password -->
+                        <MudItem xs="12">
+                            <MudTextField @bind-Value="model.Password" 
+                                          Label="Enter your password" 
+                                          InputType="@passwordInput"
+                                          Variant="Variant.Outlined"
+                                          Required="true"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@passwordIcon"
+                                          OnAdornmentClick="TogglePasswordVisibility"
+                                          Style="background-color: rgba(255,255,255,0.05);"
+                                          Class="custom-textfield" />
+                        </MudItem>
+
+                        <!-- Remember Me and Forgot Password -->
+                        <MudItem xs="12" Class="d-flex justify-space-between align-center">
+                            <MudCheckBox @bind-Value="rememberMe" 
+                                         Color="Color.Primary"
+                                         Style="color: rgba(255,255,255,0.9);">
+                                Remember me
+                            </MudCheckBox>
+                            <MudLink Href="/forgot-password" Style="color: #a78bfa;">Forgot password?</MudLink>
+                        </MudItem>
+
+                        <!-- Login Button -->
+                        <MudItem xs="12">
+                            <MudButton Variant="Variant.Filled" 
+                                       Color="Color.Primary"
+                                       FullWidth="true"
+                                       Size="Size.Large"
+                                       ButtonType="ButtonType.Submit"
+                                       Disabled="isLoading"
+                                       Style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); height: 56px; text-transform: none; font-size: 16px;">
+                                @if (isLoading)
+                                {
+                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Style="color: white;" />
+                                }
+                                else
+                                {
+                                    <span>Login</span>
+                                }
+                            </MudButton>
+                        </MudItem>
+
+                        <!-- Divider -->
+                        <MudItem xs="12" Class="d-flex align-center">
+                            <MudDivider Style="flex: 1; opacity: 0.2;" />
+                            <MudText Typo="Typo.body2" Class="mx-4" Style="color: rgba(255,255,255,0.5);">
+                                Or login with
+                            </MudText>
+                            <MudDivider Style="flex: 1; opacity: 0.2;" />
+                        </MudItem>
+
+                        <!-- Social Login Buttons -->
+                        <MudItem xs="12" sm="6">
+                            <MudButton Variant="Variant.Outlined" 
+                                       FullWidth="true"
+                                       Size="Size.Large"
+                                       StartIcon="@Icons.Custom.Brands.Google"
+                                       Style="border-color: rgba(255,255,255,0.2); color: white; height: 56px; text-transform: none;">
+                                Google
+                            </MudButton>
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudButton Variant="Variant.Outlined" 
+                                       FullWidth="true"
+                                       Size="Size.Large"
+                                       StartIcon="@Icons.Custom.Brands.Apple"
+                                       Style="border-color: rgba(255,255,255,0.2); color: white; height: 56px; text-transform: none;">
+                                Apple
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

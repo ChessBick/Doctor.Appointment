@@ -1,0 +1,15 @@
+﻿.custom-textfield .mud-input-control {
+    color: white !important;
+}
+
+.custom-textfield .mud-input-label {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.custom-textfield .mud-input-outlined {
+    border-color: rgba(255,255,255,0.2) !important;
+}
+
+    .custom-textfield .mud-input-outlined:hover {
+        border-color: rgba(255,255,255,0.4) !important;
+    }

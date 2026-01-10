@@ -1,7 +1,48 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<AuthorizeView>
+    <Authorized>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+            <MudText Typo="Typo.h3" GutterBottom="true">Welcome to Doctor Appointment System</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-4">
+                Hello, @context.User.Identity?.Name! You are successfully logged in.
+            </MudText>
 
-Welcome to your new app.
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5">Quick Actions</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">Get started with common tasks</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <AuthorizeView Roles="Patient" Context="patientAuth">
+                                <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/patient/dashboard">
+                                    My Dashboard
+                                </MudButton>
+                            </AuthorizeView>
+                            <AuthorizeView Roles="Doctor" Context="doctorAuth">
+                                <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/doctor/dashboard">
+                                    My Dashboard
+                                </MudButton>
+                            </AuthorizeView>
+                            <AuthorizeView Roles="Admin" Context="adminAuth">
+                                <MudButton Variant="Variant.Text" Color="Color.Primary" Href="/admin">
+                                    Admin Panel
+                                </MudButton>
+                            </AuthorizeView>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+</AuthorizeView>

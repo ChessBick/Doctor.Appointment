@@ -8,8 +8,6 @@ namespace Doctor.Appointment.Data.Context
         public DoctorAppointmentContext(DbContextOptions<DoctorAppointmentContext> dbco) : base(dbco) { }
 
         public DbSet<AppointmentEntity> Appointment { get; set; }
-        public DbSet<DoctorEntity> Doctors { get; set; }
-        public DbSet<PatientEntity> Patients { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<UserRoleEntity> UserRoles { get; set; }
@@ -25,18 +23,17 @@ namespace Doctor.Appointment.Data.Context
                 entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Email).IsRequired();
                 entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.IdNumber).HasMaxLength(20);
+                entity.Property(e => e.Address).HasMaxLength(200);
+                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+                entity.Property(e => e.PracticeNumber).HasMaxLength(50);
+                entity.Property(e => e.Qualification).HasMaxLength(200);
+                entity.Property(e => e.Specialization).HasMaxLength(100);
+                
                 entity.HasIndex(e => e.Username).IsUnique();
                 entity.HasIndex(e => e.Email).IsUnique();
-
-                entity.HasOne(e => e.Patient)
-                    .WithMany()
-                    .HasForeignKey(e => e.PatientId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                entity.HasOne(e => e.Doctor)
-                    .WithMany()
-                    .HasForeignKey(e => e.DoctorId)
-                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             // RoleEntity configuration
@@ -67,10 +64,9 @@ namespace Doctor.Appointment.Data.Context
 
             // Seed roles
             modelBuilder.Entity<RoleEntity>().HasData(
-                new RoleEntity { Id = 1, RoleName = "Guest", Description = "Guest user with limited access" },
-                new RoleEntity { Id = 2, RoleName = "Patient", Description = "Patient user" },
-                new RoleEntity { Id = 3, RoleName = "Doctor", Description = "Doctor user" },
-                new RoleEntity { Id = 4, RoleName = "Admin", Description = "Administrator with full access" }
+                new RoleEntity { Id = 1, RoleName = "Admin", Description = "Administrator with full access" },
+                new RoleEntity { Id = 2, RoleName = "Doctor", Description = "Doctor user with medical access" },
+                new RoleEntity { Id = 3, RoleName = "Patient", Description = "Patient user with limited access" }
             );
         }
     }

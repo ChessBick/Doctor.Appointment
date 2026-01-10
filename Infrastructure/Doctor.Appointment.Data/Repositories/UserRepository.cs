@@ -34,8 +34,6 @@ namespace Doctor.Appointment.Data.Repositories
             return await _context.Users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
-                .Include(u => u.Patient)
-                .Include(u => u.Doctor)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 

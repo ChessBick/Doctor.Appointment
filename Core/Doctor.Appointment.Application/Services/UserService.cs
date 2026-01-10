@@ -73,12 +73,19 @@ namespace Doctor.Appointment.Application.Services
                 IsActive = true,
                 IsLocked = false,
                 FailedLoginAttempts = 0,
-                PatientId = createUserDto.PatientId,
-                DoctorId = createUserDto.DoctorId
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName,
+                DateOfBirth = createUserDto.DateOfBirth,
+                IdNumber = createUserDto.IdNumber,
+                Address = createUserDto.Address,
+                PhoneNumber = createUserDto.PhoneNumber,
+                PracticeNumber = createUserDto.PracticeNumber,
+                Qualification = createUserDto.Qualification,
+                Specialization = createUserDto.Specialization
             };
 
             _userRepository.Insert(userEntity);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             // Assign roles
             foreach (var roleId in createUserDto.RoleIds)
@@ -95,7 +102,7 @@ namespace Doctor.Appointment.Application.Services
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            // Update fields if provided
+            // Update authentication fields
             if (!string.IsNullOrEmpty(updateUserDto.Username))
             {
                 if (user.Username != updateUserDto.Username && 
@@ -114,6 +121,36 @@ namespace Doctor.Appointment.Application.Services
                 user.Email = updateUserDto.Email;
             }
 
+            // Update personal information
+            if (!string.IsNullOrEmpty(updateUserDto.FirstName))
+                user.FirstName = updateUserDto.FirstName;
+
+            if (!string.IsNullOrEmpty(updateUserDto.LastName))
+                user.LastName = updateUserDto.LastName;
+
+            if (updateUserDto.DateOfBirth.HasValue)
+                user.DateOfBirth = updateUserDto.DateOfBirth;
+
+            if (!string.IsNullOrEmpty(updateUserDto.IdNumber))
+                user.IdNumber = updateUserDto.IdNumber;
+
+            if (!string.IsNullOrEmpty(updateUserDto.Address))
+                user.Address = updateUserDto.Address;
+
+            if (!string.IsNullOrEmpty(updateUserDto.PhoneNumber))
+                user.PhoneNumber = updateUserDto.PhoneNumber;
+
+            // Update doctor-specific fields
+            if (!string.IsNullOrEmpty(updateUserDto.PracticeNumber))
+                user.PracticeNumber = updateUserDto.PracticeNumber;
+
+            if (!string.IsNullOrEmpty(updateUserDto.Qualification))
+                user.Qualification = updateUserDto.Qualification;
+
+            if (!string.IsNullOrEmpty(updateUserDto.Specialization))
+                user.Specialization = updateUserDto.Specialization;
+
+            // Update account status
             if (updateUserDto.IsActive.HasValue)
                 user.IsActive = updateUserDto.IsActive.Value;
 
@@ -121,14 +158,14 @@ namespace Doctor.Appointment.Application.Services
                 user.IsLocked = updateUserDto.IsLocked.Value;
 
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             // Update roles if provided
             if (updateUserDto.RoleIds != null && updateUserDto.RoleIds.Any())
             {
                 // Remove existing roles
                 user.UserRoles.Clear();
-                _userRepository.Save();
+                await _userRepository.SaveAsync();
 
                 // Assign new roles
                 foreach (var roleId in updateUserDto.RoleIds)
@@ -146,7 +183,7 @@ namespace Doctor.Appointment.Application.Services
             if (user == null) return false;
 
             _userRepository.Delete(id);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
             return true;
         }
 
@@ -193,7 +230,7 @@ namespace Doctor.Appointment.Application.Services
                 }
 
                 _userRepository.Update(user);
-                _userRepository.Save();
+                await _userRepository.SaveAsync();
 
                 return new LoginResponseDto
                 {
@@ -206,7 +243,7 @@ namespace Doctor.Appointment.Application.Services
             user.LastLoginAt = DateTime.UtcNow;
             user.FailedLoginAttempts = 0;
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             var userDto = await GetUserByIdAsync(user.Id);
 
@@ -215,7 +252,7 @@ namespace Doctor.Appointment.Application.Services
                 Success = true,
                 Message = "Login successful",
                 User = userDto,
-                Token = GenerateToken(user), // Implement JWT token generation
+                Token = GenerateToken(user),
                 ExpiresAt = DateTime.UtcNow.AddHours(24)
             };
         }
@@ -225,8 +262,6 @@ namespace Doctor.Appointment.Application.Services
             var user = await _userRepository.GetByIdWithRolesAsync(userId);
             if (user == null) return false;
 
-            // You can implement token invalidation here if using JWT
-            // For now, just return success
             return true;
         }
 
@@ -236,7 +271,6 @@ namespace Doctor.Appointment.Application.Services
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            // Verify current password
             if (!_passwordHasher.VerifyPassword(
                 changePasswordDto.CurrentPassword ?? string.Empty, 
                 user.PasswordHash ?? string.Empty, 
@@ -245,7 +279,6 @@ namespace Doctor.Appointment.Application.Services
                 throw new InvalidOperationException("Current password is incorrect");
             }
 
-            // Hash new password
             var (passwordHash, passwordSalt) = _passwordHasher.HashPassword(changePasswordDto.NewPassword ?? string.Empty);
             
             user.PasswordHash = passwordHash;
@@ -253,7 +286,7 @@ namespace Doctor.Appointment.Application.Services
             user.PasswordChangedAt = DateTime.UtcNow;
 
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             return true;
         }
@@ -275,7 +308,7 @@ namespace Doctor.Appointment.Application.Services
             if (user == null) return false;
 
             if (user.UserRoles.Any(ur => ur.RoleId == roleId))
-                return true; // Role already assigned
+                return true;
 
             var userRole = new UserRoleEntity
             {
@@ -286,7 +319,7 @@ namespace Doctor.Appointment.Application.Services
 
             user.UserRoles.Add(userRole);
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             return true;
         }
@@ -301,7 +334,7 @@ namespace Doctor.Appointment.Application.Services
 
             user.UserRoles.Remove(userRole);
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             return true;
         }
@@ -313,7 +346,7 @@ namespace Doctor.Appointment.Application.Services
 
             user.IsLocked = true;
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             return true;
         }
@@ -326,30 +359,25 @@ namespace Doctor.Appointment.Application.Services
             user.IsLocked = false;
             user.FailedLoginAttempts = 0;
             _userRepository.Update(user);
-            _userRepository.Save();
+            await _userRepository.SaveAsync();
 
             return true;
         }
 
-        // Helper methods
         private string GenerateToken(UserEntity user)
         {
             // TODO: Implement JWT token generation
-            // You'll need to add Microsoft.AspNetCore.Authentication.JwtBearer package
-            // and implement proper JWT token generation
             return "TOKEN_PLACEHOLDER";
         }
 
         private long GetRoleIdByName(string roleName)
         {
-            // Map role names to IDs based on your UserRole enum
             return roleName.ToLower() switch
             {
-                "guest" => 1,
-                "patient" => 2,
-                "doctor" => 3,
-                "admin" => 4,
-                _ => 1
+                "admin" => 1,
+                "doctor" => 2,
+                "patient" => 3,
+                _ => 3
             };
         }
     }

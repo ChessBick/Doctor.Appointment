@@ -8,6 +8,7 @@ namespace Doctor.Appointment.Domain.Entities
     {
         public long Id { get; set; }
         
+        // Authentication properties
         [Required]
         [StringLength(100)]
         public string? Username { get; set; }
@@ -33,14 +34,38 @@ namespace Doctor.Appointment.Domain.Entities
         
         public int FailedLoginAttempts { get; set; }
         
+        // Personal information properties (from Patient)
+        [Required]
+        [StringLength(100)]
+        public string? FirstName { get; set; }
+        
+        [Required]
+        [StringLength(100)]
+        public string? LastName { get; set; }
+        
+        public DateTime? DateOfBirth { get; set; }
+        
+        [StringLength(20)]
+        public string? IdNumber { get; set; }
+        
+        [StringLength(200)]
+        public string? Address { get; set; }
+        
+        [Phone]
+        [StringLength(20)]
+        public string? PhoneNumber { get; set; }
+        
+        // Doctor-specific properties (only applicable if user has Doctor role)
+        [StringLength(50)]
+        public string? PracticeNumber { get; set; }
+        
+        [StringLength(200)]
+        public string? Qualification { get; set; }
+        
+        [StringLength(100)]
+        public string? Specialization { get; set; }
+        
         // Navigation properties
         public ICollection<UserRoleEntity> UserRoles { get; set; } = new List<UserRoleEntity>();
-        
-        // Foreign key to link with Patient or Doctor
-        public long? PatientId { get; set; }
-        public PatientEntity? Patient { get; set; }
-        
-        public long? DoctorId { get; set; }
-        public DoctorEntity? Doctor { get; set; }
     }
 }

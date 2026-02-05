@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Doctor.Appointment.Data.Migrations
 {
     [DbContext(typeof(DoctorAppointmentContext))]
-    [Migration("20260105195520_InitialMigration")]
+    [Migration("20260110140806_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -39,68 +39,6 @@ namespace Doctor.Appointment.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Appointment");
-                });
-
-            modelBuilder.Entity("Doctor.Appointment.Domain.Entities.DoctorEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("PracticeNumber")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Qualification")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Doctors");
-                });
-
-            modelBuilder.Entity("Doctor.Appointment.Domain.Entities.PatientEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("CellNumber")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("IdNumber")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Surname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("Doctor.Appointment.Domain.Entities.RoleEntity", b =>
@@ -130,26 +68,20 @@ namespace Doctor.Appointment.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            Description = "Guest user with limited access",
-                            RoleName = "Guest"
+                            Description = "Administrator with full access",
+                            RoleName = "Admin"
                         },
                         new
                         {
                             Id = 2L,
-                            Description = "Patient user",
-                            RoleName = "Patient"
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            Description = "Doctor user",
+                            Description = "Doctor user with medical access",
                             RoleName = "Doctor"
                         },
                         new
                         {
-                            Id = 4L,
-                            Description = "Administrator with full access",
-                            RoleName = "Admin"
+                            Id = 3L,
+                            Description = "Patient user with limited access",
+                            RoleName = "Patient"
                         });
                 });
 
@@ -161,11 +93,15 @@ namespace Doctor.Appointment.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("DoctorId")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -173,6 +109,15 @@ namespace Doctor.Appointment.Data.Migrations
 
                     b.Property<int>("FailedLoginAttempts")
                         .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("IdNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -182,6 +127,11 @@ namespace Doctor.Appointment.Data.Migrations
 
                     b.Property<DateTime?>("LastLoginAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("PasswordChangedAt")
                         .HasColumnType("datetime2");
@@ -193,8 +143,21 @@ namespace Doctor.Appointment.Data.Migrations
                     b.Property<string>("PasswordSalt")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("PatientId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("PracticeNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Qualification")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Specialization")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -203,12 +166,8 @@ namespace Doctor.Appointment.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
-
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("PatientId");
 
                     b.HasIndex("Username")
                         .IsUnique();
@@ -241,23 +200,6 @@ namespace Doctor.Appointment.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("Doctor.Appointment.Domain.Entities.UserEntity", b =>
-                {
-                    b.HasOne("Doctor.Appointment.Domain.Entities.DoctorEntity", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Doctor.Appointment.Domain.Entities.PatientEntity", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Doctor.Appointment.Domain.Entities.UserRoleEntity", b =>

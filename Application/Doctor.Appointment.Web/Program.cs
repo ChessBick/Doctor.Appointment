@@ -1,6 +1,6 @@
+using Blazored.SessionStorage;
 using Doctor.Appointment.Web.Components;
 using Doctor.Appointment.Web.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
 
@@ -11,33 +11,18 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMudServices();
 
-// Add Session support
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromHours(24);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
-
-// Add HttpContextAccessor
-builder.Services.AddHttpContextAccessor();
+// Add Blazored SessionStorage
+builder.Services.AddBlazoredSessionStorage();
 
 // Add HttpClient for API calls
 builder.Services.AddHttpClient<AuthService>();
 
-// Add Authentication
+// Add Authentication & Authorization for Blazor Server
+builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
-builder.Services.AddAuthorizationCore();
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-{
-    options.ExpireTimeSpan = TimeSpan.FromHours(2);
-    options.LoginPath = "/login";
-    options.SlidingExpiration = true;
-});
 
+builder.Services.AddAuthorizationCore();
 
 var app = builder.Build();
 
@@ -51,14 +36,10 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
-// Add Session middleware
-app.UseSession();
-
 app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-app.UseAuthentication();
-app.UseAuthorization();
+
 app.Run();

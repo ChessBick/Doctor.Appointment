@@ -34,13 +34,13 @@
 @code {
     private async Task HandleLogout()
     {
-        var currentUser = AuthStateProvider.GetCurrentUser();
+        var currentUser =  await AuthStateProvider.GetCurrentUserAsync();
         if (currentUser != null)
         {
             await AuthService.LogoutAsync(currentUser.Id);
         }
 
-        AuthStateProvider.MarkUserAsLoggedOut();
+        await AuthStateProvider.MarkUserAsLoggedOutAsync();
         Snackbar.Add("Logged out successfully", Severity.Success);
         Navigation.NavigateTo("/login", forceLoad: true);
     }

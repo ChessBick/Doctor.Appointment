@@ -46,30 +46,40 @@ namespace Doctor.Appointment.Web.Components.Pages.Auth
 
                 if (response.Success && response.User != null)
                 {
-                    AuthStateProvider.MarkUserAsAuthenticated(response.User);
-                    Snackbar.Add("Login successful!", Severity.Success);
+                    // Mark user as authenticated and wait for it to complete
+                    await AuthStateProvider.MarkUserAsAuthenticatedAsync(response.User);
+                    
+                    // Show success message
+                    Snackbar.Add("Login successful! Redirecting...", Severity.Success);
 
-                    // Redirect to return URL or role-based dashboard
+                    // Small delay to ensure state notification propagates
+                    await Task.Delay(100);
+
+                    // Determine redirect URL
+                    string redirectUrl;
                     if (!string.IsNullOrEmpty(returnUrl))
                     {
-                        Navigation.NavigateTo(returnUrl, forceLoad: true);
+                        redirectUrl = returnUrl;
                     }
                     else if (response.User.Roles.Contains("Admin"))
                     {
-                        Navigation.NavigateTo("/admin");
+                        redirectUrl = "/admin";
                     }
                     else if (response.User.Roles.Contains("Doctor"))
                     {
-                        Navigation.NavigateTo("/doctor/dashboard");
+                        redirectUrl = "/doctor/dashboard";
                     }
                     else if (response.User.Roles.Contains("Patient"))
                     {
-                        Navigation.NavigateTo("/patient/dashboard");
+                        redirectUrl = "/patient/dashboard";
                     }
                     else
                     {
-                        Navigation.NavigateTo("/");
+                        redirectUrl = "/";
                     }
+
+                    // Use normal navigation - authentication state is already set in memory
+                    Navigation.NavigateTo(redirectUrl);
                 }
                 else
                 {

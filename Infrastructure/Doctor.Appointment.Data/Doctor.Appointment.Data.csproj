@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\Core\Doctor.Appointment.Domain\Doctor.Appointment.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

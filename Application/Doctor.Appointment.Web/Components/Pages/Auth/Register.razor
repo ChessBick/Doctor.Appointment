@@ -1,5 +1,6 @@
 @layout LoginLayout
 @page "/register"
+@using System.ComponentModel.DataAnnotations
 @rendermode InteractiveServer
 
 
@@ -41,7 +42,7 @@
 
         <!-- Right Panel - Registration Form -->
         <MudItem xs="12" md="6" Class="d-flex flex-column align-center justify-center pa-8" 
-                 Style="background-color: #1f1f2e;">
+                 Style="background-color: #1f1f2e; overflow-y: auto;">
             <MudPaper Elevation="0" Class="pa-8" Style="max-width: 480px; width: 100%; background-color: transparent;">
                 
                 <!-- Header -->
@@ -54,8 +55,7 @@
                 </MudText>
 
                 <!-- Registration Form -->
-                <EditForm Model="@model" OnValidSubmit="HandleRegistration" FormName="RegisterForm">
-                    <DataAnnotationsValidator />
+                <MudForm @ref="form" Model="@model" Validation="@(ValidateModel)" ValidationDelay="0">
                     <MudGrid Spacing="3">
                         <!-- Username -->
                         <MudItem xs="12">
@@ -63,6 +63,7 @@
                                           Label="Username" 
                                           Variant="Variant.Outlined"
                                           Required="true"
+                                          RequiredError="Username is required"
                                           Style="background-color: rgba(255,255,255,0.05);"
                                           Class="custom-textfield" />
                         </MudItem>
@@ -74,10 +75,35 @@
                                           InputType="InputType.Email"
                                           Variant="Variant.Outlined"
                                           Required="true"
+                                          RequiredError="Email is required"
+                                          Validation="@(new EmailAddressAttribute() { ErrorMessage = "Invalid email address" })"
                                           Style="background-color: rgba(255,255,255,0.05);"
                                           Class="custom-textfield" />
                         </MudItem>
 
+                        <!-- First Name -->
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="model.FirstName" 
+                                          Label="First Name" 
+                                          Variant="Variant.Outlined"
+                                          Required="true"
+                                          RequiredError="First name is required"
+                                          Style="background-color: rgba(255,255,255,0.05);"
+                                          Class="custom-textfield" />
+                        </MudItem>
+
+                        <!-- Last Name -->
+                        <MudItem xs="12" sm="6">
+                            <MudTextField @bind-Value="model.LastName" 
+                                          Label="Last Name" 
+                                          Variant="Variant.Outlined"
+                                          Required="true"
+                                          RequiredError="Last name is required"
+                                          Style="background-color: rgba(255,255,255,0.05);"
+                                          Class="custom-textfield" />
+                        </MudItem>
+
+                     
                         <!-- Password -->
                         <MudItem xs="12">
                             <MudTextField @bind-Value="model.Password" 
@@ -85,6 +111,7 @@
                                           InputType="@passwordInput"
                                           Variant="Variant.Outlined"
                                           Required="true"
+                                          RequiredError="Password is required"
                                           Adornment="Adornment.End"
                                           AdornmentIcon="@passwordIcon"
                                           OnAdornmentClick="TogglePasswordVisibility"
@@ -110,7 +137,7 @@
                                        Color="Color.Primary"
                                        FullWidth="true"
                                        Size="Size.Large"
-                                       ButtonType="ButtonType.Submit"
+                                       OnClick="HandleRegistration"
                                        Disabled="isLoading"
                                        Style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); height: 56px; text-transform: none; font-size: 16px;">
                                 @if (isLoading)
@@ -153,7 +180,7 @@
                             </MudButton>
                         </MudItem>
                     </MudGrid>
-                </EditForm>
+                </MudForm>
 
             </MudPaper>
         </MudItem>

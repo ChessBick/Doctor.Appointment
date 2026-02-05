@@ -1,3 +1,4 @@
+using Blazored.SessionStorage;
 using Doctor.Appointment.Domain.DTOs.User;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
@@ -7,31 +8,21 @@ namespace Doctor.Appointment.Web.Services
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+        private readonly ISessionStorageService _sessionStorage;
+        private readonly ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+        private const string USER_SESSION_KEY = "CurrentUser";
 
-        public CustomAuthenticationStateProvider(IHttpContextAccessor httpContextAccessor)
+        public CustomAuthenticationStateProvider(ISessionStorageService sessionStorage)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _sessionStorage = sessionStorage;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             try
             {
-                var httpContext = _httpContextAccessor.HttpContext;
-                if (httpContext == null)
-                {
-                    return new AuthenticationState(_anonymous);
-                }
-
-                var userJson = httpContext.Session.GetString("CurrentUser");
-                if (string.IsNullOrEmpty(userJson))
-                {
-                    return new AuthenticationState(_anonymous);
-                }
-
-                var user = JsonSerializer.Deserialize<UserDto>(userJson);
+                var user = await _sessionStorage.GetItemAsync<UserDto>(USER_SESSION_KEY);
+                
                 if (user == null)
                 {
                     return new AuthenticationState(_anonymous);
@@ -49,7 +40,7 @@ namespace Doctor.Appointment.Web.Services
                     claims.Add(new Claim(ClaimTypes.Role, role));
                 }
 
-                var identity = new ClaimsIdentity(claims, "CustomAuth");
+                var identity = new ClaimsIdentity(claims, "SessionAuth");
                 var claimsPrincipal = new ClaimsPrincipal(identity);
 
                 return new AuthenticationState(claimsPrincipal);
@@ -60,54 +51,39 @@ namespace Doctor.Appointment.Web.Services
             }
         }
 
-        public void MarkUserAsAuthenticated(UserDto user)
+        public async Task MarkUserAsAuthenticatedAsync(UserDto user)
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext != null)
+            await _sessionStorage.SetItemAsync(USER_SESSION_KEY, user);
+
+            var claims = new List<Claim>
             {
-                var userJson = JsonSerializer.Serialize(user);
-                httpContext.Session.SetString("CurrentUser", userJson);
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username ?? string.Empty),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+            };
 
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Username ?? string.Empty),
-                    new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
-                };
-
-                foreach (var role in user.Roles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
-                }
-
-                var identity = new ClaimsIdentity(claims, "CustomAuth");
-                var claimsPrincipal = new ClaimsPrincipal(identity);
-
-                NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
+
+            var identity = new ClaimsIdentity(claims, "SessionAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
         }
 
-        public void MarkUserAsLoggedOut()
+        public async Task MarkUserAsLoggedOutAsync()
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext != null)
-            {
-                httpContext.Session.Remove("CurrentUser");
-                NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_anonymous)));
-            }
+            await _sessionStorage.RemoveItemAsync(USER_SESSION_KEY);
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_anonymous)));
         }
 
-        public UserDto? GetCurrentUser()
+        public async Task<UserDto?> GetCurrentUserAsync()
         {
             try
             {
-                var httpContext = _httpContextAccessor.HttpContext;
-                if (httpContext == null) return null;
-
-                var userJson = httpContext.Session.GetString("CurrentUser");
-                if (string.IsNullOrEmpty(userJson)) return null;
-
-                return JsonSerializer.Deserialize<UserDto>(userJson);
+                return await _sessionStorage.GetItemAsync<UserDto>(USER_SESSION_KEY);
             }
             catch
             {
